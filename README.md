@@ -14,3 +14,6 @@ the algorithm slowly processes through the grid tiles until it discovers the des
 tile. It may fail catastrophically if there is no shortest path available as I did not 
 fully test it.
 
+##2. Sorting Algorithms
+As a revision for my Algorithms and C++ modules in uni. Implemented the 5 "basic" sorting 
+algorithms using the OOP concept of C++.

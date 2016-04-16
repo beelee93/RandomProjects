@@ -1,0 +1,6 @@
+#include "Sort.h"
+#include "MergeSort.h"
+#include "InsertionSort.h"
+#include "HeapSort.h"
+#include "QuickSort.h"
+#include "BubbleSort.h"
