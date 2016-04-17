@@ -1,3 +1,90 @@
+/**
+ * Priority Queue, with minimising heap structure
+ */
+ function QueueNode(timeStamp,key,item) {
+		this.key = key;
+		this.timeStamp = timeStamp;
+		this.item = item;
+ }
+ 
+ // returns -1 if this node is smaller than specified node
+ QueueNode.prototype.compare = function(node) {
+	 var key1, key2;
+	 key1 = this.key;
+	 key2 = node.key;
+	 
+	 if(key1 < key2) return -1;
+	 else if(key1 > key2) return 1;
+	 else {
+		 key1 = this.timeStamp;
+		 key2 = node.timeStamp;
+		 if(key1 < key2) return -1;
+		 else if(key1>key2) return 1;
+		 else return 0;
+	 }
+ };
+ 
+ function PriorityQueue() {
+	 this.timeStamp = 0;
+	 this.nodes = [];
+ }
+ 
+ PriorityQueue.prototype.enqueue = function(node) {
+	 this.nodes.unshift(node);
+	 this._fixHeap();
+ }
+ 
+ PriorityQueue.prototype.enqueue2 = function(key,item) {
+	 this.enqueue(new QueueNode(this.timeStamp++,key,item));
+ };
+ 
+ PriorityQueue.prototype.dequeue = function(node) {
+	 if(this.isEmpty()) return null;
+	 
+	 var res = this.nodes[0];
+	 var swap = this.nodes[0];
+	 this.nodes[0] = this.nodes[this.nodes.length-1];
+	 this.nodes[this.nodes.length-1] = swap;
+	 this.nodes.pop();
+	 this._fixHeap();
+	 
+	 return res;
+ }
+ 
+ PriorityQueue.prototype.isEmpty = function() {
+	 return (this.nodes.length == 0);
+ };
+ 
+ // fixes heap from top to bottom
+ PriorityQueue.prototype._fixHeap = function() {
+	var root, leftChild, rightChild, last, temp, swap;
+	root = 0;
+	last = this.nodes.length-1;
+	
+	while(root<=last) {
+		temp = root;
+		leftChild = 2*root + 1;
+		rightChild = leftChild + 1;
+		if(leftChild>last) break; // leaf node
+		
+		if(this.nodes[temp].compare(this.nodes[leftChild]) > 0)
+				temp = leftChild;
+		if(rightChild <= last && this.nodes[temp].compare(this.nodes[rightChild]) > 0) 
+				temp=rightChild;
+		
+		if(temp == root) break; // done
+		
+		swap = this.nodes[temp];
+		this.nodes[temp] = this.nodes[root];
+		this.nodes[root] = swap;
+		
+		root = temp;
+	}
+ };
+ 
+ 
+//////////////////////////////////////////////////
+
 var Directions = [ [-1,-1],
                   [ 0,-1],
                   [ 1,-1],
@@ -65,7 +152,7 @@ Grid.prototype.resetGrid = function(gridPenalty) {
 		}
 	}
 	this.initial = true;
-	this.queue = [];
+	this.queue = new PriorityQueue();
 	this.neighbours = [];
 	this.currentNode = null;
 	this.processedNode = null;
@@ -100,7 +187,7 @@ Grid.prototype.tick = function() {
 		node.distance = 0;
 		
 		// queue node
-		this.queue.push(node);
+		this.queue.enqueue2(node.distance, node);
 		node.inQueue = true;
 		
 		this.initial = false;
@@ -155,7 +242,7 @@ Grid.prototype.tick = function() {
 						node.marked = true;
 						node.distance = i;
 						node.parentNode = this.currentNode;
-						this.queue.push(node);
+						this.queue.enqueue2(node.distance, node);
 						node.inQueue = true;
 					}
 					else {
@@ -177,10 +264,10 @@ Grid.prototype.tick = function() {
 				}
 			}
 		}
-		else if(this.queue.length>0) { // is the queue not empty?
+		else if(!this.queue.isEmpty()) { // is the queue not empty?
 			// dequeue a node
 			console.log("Not processing anything. Dequeuing a node...");
-			this.currentNode = this.queue.shift();
+			this.currentNode = this.queue.dequeue().item;
 			this.currentNode.inQueue = false;
 			this.processingDir = 0;
 		}
@@ -235,7 +322,7 @@ GridCanvas.init = function(canvasId, size) {
 	this.phase = PHASE_RESET;
 	
 	this.countDown = 0;
-	this.origCountDown = 0.3; // set this higher to slow tick rate
+	this.origCountDown = 0.0; // set this higher to slow tick rate
 	this.arrow = null;
 	
 	this.gridPenalty = new Array(size);
