@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Prim's Algorithm</title>
+<script src="priorityqueue.js"></script>
+<script src="main.js"></script>
+<style>
+body {
+	background:#659CEF;
+}
+#divElement{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}		
+</style>
+<script>
+	var a = new Graph();
+	function loaded(){
+		document.body.addEventListener("keypress", keypress, false);
+		
+		a = Graph.generateGraph([ [81,91],
+		                          [278,64],
+		                          [161,259],
+		                          [356,181],
+		                          [492,179],
+		                          [77,467],
+		                          [234,403],
+		                          [359,358],
+		                          [518,408],
+		                          [260,563],
+		                          [488, 540]], 
+		                          
+		                          [ [0,1,2,0,0,3,0,0,0,0,0],
+		                            [1,0,5,1,2,0,0,0,0,0,0],
+		                            [2,5,0,0,0,1,2,1,0,0,0],
+		                            [0,1,0,0,4,0,7,2,0,0,0],
+		                            [0,2,0,4,0,0,0,1,2,0,0],
+		                            [3,0,1,0,0,0,4,0,0,3,0],
+		                            [0,0,2,7,0,4,0,0,0,0,2],
+		                            [0,0,1,2,1,0,0,0,2,1,0],
+		                            [0,0,0,0,2,0,0,2,0,0,3],
+		                            [0,0,0,0,0,3,0,1,0,0,0],
+		                            [0,0,0,0,0,0,2,0,3,0,0]
+		                           ]);
+		GridCanvas.init("gridCanvas", a);
+	}
+	
+	function keypress(evt){
+		if(evt.key == 'a')
+		{
+			GridCanvas.animate = true;
+		}
+	}
+</script>
+</head>
+<body onload="loaded()">
+	<div id="divElement">
+		<canvas id="gridCanvas" width='600' height='600'></canvas>
+	</div>
+	<!-- <img id="arrow" src="arrow.png" style="display:none"/> -->
+</body>
+</html>
